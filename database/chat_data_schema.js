@@ -1,3 +1,4 @@
+//사실상 사용안한다고 볼수 있지
 var crypto = require('crypto');
 
 var Schema = {};

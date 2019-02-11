@@ -22,6 +22,8 @@ function connect(app,config){
 }
 
 function createSchema(app,config){
+    
+    //채팅방에 대한 정보 
     var curSchema  = require(config.db_schemas[0].file).createSchema(mongoose);
     
     var curModel = mongoose.model(config.db_schemas[0].collection,curSchema);
@@ -29,12 +31,14 @@ function createSchema(app,config){
     database[config.db_schemas[0].schemaName] = curSchema;
     database[config.db_schemas[0].modelName] = curModel;
     
+    
     var curSchema2  = require(config.db_schemas[1].file).createSchema(mongoose);
     
     var curModel2 = mongoose.model(config.db_schemas[1].collection,curSchema2);
     
     database[config.db_schemas[1].schemaName] = curSchema2;
     database[config.db_schemas[1].modelName] = curModel2;
+    
     
     var curSchema3  = require(config.db_schemas[2].file).createSchema(mongoose);
     

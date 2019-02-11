@@ -62,7 +62,7 @@ module.exports = function(app){
                     if(err){
                         throw err;
                     }
-                    var serial_num = num[0]._doc.num + 1;
+                    var serial_num = num[0]._doc.num;
                     
                     var chatlist = "chat" + serial_num;
                     
@@ -80,7 +80,17 @@ module.exports = function(app){
                             throw err;
                         }
                         
-                        console.log('complete_______________');
+                        console.log('현재 채팅방의 개수 : ' + serial_num);
+                        
+                     database.Chat_numModel.update({'num' : serial_num +1},function(err,result){
+                         if(err){
+                             throw err;
+                         }
+                         
+                         if(result){
+                             console.log(result);
+                         }
+                     });                       
                     });
                 });
 
@@ -93,5 +103,12 @@ module.exports = function(app){
         });
     });
     
+    router.get('/open',function(req,res){
+        console.log('채팅방을 열겠습니다.');
+        res.redirect('../../chat_room.html')
+    })
+    
     return router;
 };
+//chatopen을 하나 추가해야겠다.
+//챗목록에 있는 아이디 클릭하면 /chat/chat_open 요청 보내서 채팅방 화면으로 넘어가게잉

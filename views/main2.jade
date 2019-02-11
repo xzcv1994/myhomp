@@ -1,32 +1,22 @@
 doctype html
-html(lang="en")
+html(lang='en')
   head
-    meta(charset="utf-8")
-    |     
-    meta(name="viewport", content="width=device-width, initial-scale=1, shrink-to-fit=no")
-    |     
-    meta(name="description", content="")
-    |     
-    meta(name="author", content="")
-    |     
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
     title Yang's home
     // Bootstrap core CSS
-    link(href="../vendor/bootstrap/css/bootstrap.min.css", rel="stylesheet")
+    link(href='../vendor/bootstrap/css/bootstrap.min.css', rel='stylesheet')
     // Custom fonts for this template
-    link(href="../vendor/font-awesome/css/font-awesome.min.css", rel="stylesheet", type="text/css")
-    |     
-    link(href="https://fonts.googleapis.com/css?family=Montserrat:400,700", rel="stylesheet", type="text/css")
-    |     
-    link(href="https://fonts.googleapis.com/css?family=Kaushan+Script", rel="stylesheet", type="text/css")
-    |     
-    link(href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic", rel="stylesheet", type="text/css")
-    |     
-    link(href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700", rel="stylesheet", type="text/css")
-    |     
-    script(src="../socket.io.js")
+    link(href='../vendor/font-awesome/css/font-awesome.min.css', rel='stylesheet', type='text/css')
+    link(href='https://fonts.googleapis.com/css?family=Montserrat:400,700', rel='stylesheet', type='text/css')
+    link(href='https://fonts.googleapis.com/css?family=Kaushan+Script', rel='stylesheet', type='text/css')
+    link(href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic', rel='stylesheet', type='text/css')
+    link(href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700', rel='stylesheet', type='text/css')
+    script(src='../socket.io.js')
     // Custom styles for thistemplate
-    link(href="../css/agency.min.css", rel="stylesheet")
-    |     
+    link(href='../css/agency.min.css', rel='stylesheet')
     style.
       #popup_bg{
       position:fixed;
@@ -109,33 +99,26 @@ html(lang="en")
       font-weight: bold;
       color: black;
       }
-  |   
   body#page-top
     // Navigation
     nav#mainNav.navbar.navbar-expand-lg.navbar-dark.fixed-top
       .container
-        a.navbar-brand.js-scroll-trigger(href="#page-top") Yang's home
-        |         
-        button.navbar-toggler.navbar-toggler-right(type="button", data-toggle="collapse", data-target="#navbarResponsive", aria-controls="navbarResponsive", aria-expanded="false", aria-label="Toggle navigation")
+        a.navbar-brand.js-scroll-trigger(href='#page-top') Yang's home
+        button.navbar-toggler.navbar-toggler-right(type='button', data-toggle='collapse', data-target='#navbarResponsive', aria-controls='navbarResponsive', aria-expanded='false', aria-label='Toggle navigation')
           | Menu
           i.fa.fa-bars
-        |         
         #navbarResponsive.collapse.navbar-collapse
           ul.navbar-nav.text-uppercase.ml-auto
             li.nav-item
-              a.nav-link.js-scroll-trigger(href="#team") #{user_info.email} 님
-            |             
+              a.nav-link.js-scroll-trigger(href='#team') #{user_info.email} 님
             li.nav-item
-              a.nav-link.js-scroll-trigger(href="#services") Services
-            |             
+              a.nav-link.js-scroll-trigger(href='#services') Services
             li.nav-item
-              form(method="get", action="/users/logout", name="frm2")
-                a.nav-link.js-scroll-trigger(href="#portfolio", onclick="logout();") Logout
-            |             
+              form(method='get', action='/users/logout', name='frm2')
+                a.nav-link.js-scroll-trigger(href='#portfolio', onclick='logout();') Logout
             li.nav-item
-              a.nav-link.js-scroll-trigger(onclick="openchat();") Chat
-            |               
-            button(onclick="socket_connect();") test
+              a.nav-link.js-scroll-trigger(onclick='openchat();') Chat
+            button(onclick='socket_connect();') test
             //
               <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
@@ -155,36 +138,24 @@ html(lang="en")
           .col-lg-12.text-center
             h2.section-heading.text-uppercase Services
             // <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
-        |         
         .row.text-center
           .col-md-4
             span.fa-stack.fa-4x
               i.fa.fa-circle.fa-stack-2x.text-primary
-              |               
               i.fa.fa-shopping-cart.fa-stack-1x.fa-inverse
-            |             
             h4.service-heading manchester united
-            |             
             p.text-muted EPL 최고의 실력과 근본을 자랑하는 명문구단
-          |           
           .col-md-4
             span.fa-stack.fa-4x
               i.fa.fa-circle.fa-stack-2x.text-primary
-              |               
               i.fa.fa-laptop.fa-stack-1x.fa-inverse
-            |             
             h4.service-heading Photo
-            |             
             p.text-muted 일상 사진
-          |           
           .col-md-4
             span.fa-stack.fa-4x
               i.fa.fa-circle.fa-stack-2x.text-primary
-              |               
               i.fa.fa-lock.fa-stack-1x.fa-inverse
-            |             
             h4.service-heading Web Security
-            |             
             p.text-muted
               | Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.
     // Portfolio Grid
@@ -783,29 +754,24 @@ html(lang="en")
       </div>
     #popup_bg
       .popup_main
-        .chat_header(overflow:scroll="")
-          img(src="../img/Chat.png")
-        |         
+        .chat_header(overflow:scroll='')
+          img(src='../img/Chat.png')
         .chat_list
           ul
-           -for(var i=0;i<user_info.length;i++)
+           -for(var i=0;i<user_info.length;i++){
              li 
-              a(href="#") #{user_info[i]._doc.contact_person}
-                
+              form(method="get", action="/chat/open", id="frm" + i)
+               a(href="#" onclick="document.getElementById('frm#{i}').submit();") #{user_info[i]._doc.contact_person + i} 
+           -}  
         .chat_add
-          form(method="get", action="/chat/chatadd")
-            input.chat_add_input(type="text", value="", name="receiver")
+          form(method='get', action='/chat/chatadd')
+            input.chat_add_input(type='text', value='', name='receiver')
             br
             br
-            |                 
-            input.chat_add_submit(type="submit", value="등록", onclick="chat_add()")
-        |         
-        .close_popup(onclick="closePop()")
-          img(src="../img/close-window.png")
-    |  
-    |       
-    |       
-    script(type="text/javascript").
+            input.chat_add_submit(type='submit', value='등록', onclick='chat_add()')
+        .close_popup(onclick='closePop()')
+          img(src='../img/close-window.png')
+    script(type='text/javascript').
       var popup = document.getElementById("popup_bg");
       function openPop(){
       popup.style.display = "block";
@@ -819,6 +785,9 @@ html(lang="en")
       function openchat(){
       popup.style.display = "block";
       }
+      function chat_open(){
+      frm3.submit();
+      }
       function socket_connect(){
       var url = 'http://13.209.237.191:3000';
       var options = {'forceNew' : true};
@@ -827,17 +796,14 @@ html(lang="en")
       alert("socket's successfully connected");
       })
       }
-      function chat_add(){
-      }
     // Bootstrap core JavaScript
-    script(src="../vendor/jquery/jquery.min.js")
-    |     
-    script(src="../vendor/bootstrap/js/bootstrap.bundle.min.js")
+    script(src='../vendor/jquery/jquery.min.js')
+    script(src='../vendor/bootstrap/js/bootstrap.bundle.min.js')
     // Plugin JavaScript
-    script(src="../vendor/jquery-easing/jquery.easing.min.js")
+    script(src='../vendor/jquery-easing/jquery.easing.min.js')
     // Contact form JavaScript
-    script(src="../js/jqBootstrapValidation.js")
-    |     
-    script(src="../js/contact_me.js")
+    script(src='../js/jqBootstrapValidation.js')
+    script(src='../js/contact_me.js')
     // Custom scripts for this template
-    script(src="../js/agency.min.js")
+    script(src='../js/agency.min.js')
+//저 for로 여러개 폼을 똑같은 이름으로 만드니까 전송이안가더라고 그래서 다른거 지우고 아이디 한개만 해서 폼한개만 해서 전송하면 채팅방 로드하는거 됐음

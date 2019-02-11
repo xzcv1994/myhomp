@@ -1,3 +1,4 @@
+//채팅방에 대한 정보
 var crypto = require('crypto');
 
 var Schema = {};
