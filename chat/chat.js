@@ -2,6 +2,7 @@ module.exports = function(app){
     var express = require('express');
     var router = express.Router();
     var mongoose = require('mongoose');
+    var url = require('url');
     
     router.get('/chatadd',function(req,res){
         
@@ -104,6 +105,9 @@ module.exports = function(app){
     });
     
     router.get('/open',function(req,res){
+        
+        var querydata = url.parse(req.url,true).query;
+        console.log(querydata);
         console.log('채팅방을 열겠습니다.');
         res.redirect('../../chat_room.html')
     })

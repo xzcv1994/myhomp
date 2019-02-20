@@ -760,15 +760,14 @@ html(lang='en')
           ul
            -for(var i=0;i<user_info.length;i++){
              li 
-              form(method="get", action="/chat/open", id="frm" + i)
-               a(href="#" onclick="document.getElementById('frm#{i}').submit();") #{user_info[i]._doc.contact_person + i} 
+               a(href="/chat/open/?guest=#{user_info[i]._doc.contact_person}" onclick="document.getElementById('frm#{i}').submit();") #{user_info[i]._doc.contact_person + i} 
            -}  
         .chat_add
           form(method='get', action='/chat/chatadd')
             input.chat_add_input(type='text', value='', name='receiver')
             br
             br
-            input.chat_add_submit(type='submit', value='등록', onclick='chat_add()')
+            input.chat_add_submit(type='submit', valuse='등록', onclick='chat_add()')
         .close_popup(onclick='closePop()')
           img(src='../img/close-window.png')
     script(type='text/javascript').
