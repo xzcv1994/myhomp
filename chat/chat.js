@@ -109,10 +109,46 @@ module.exports = function(app){
         var querydata = url.parse(req.url,true).query;
         console.log(querydata);
         console.log('채팅방을 열겠습니다.');
-        res.redirect('../../chat_room.html')
+        var template = `<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>${querydata.guest}님과의 채팅방</title>
+        <style>
+            h1{
+                margin-top: -10px;
+                margin-bottom: 0;
+            }
+            #chat_display{
+                background-color: cadetblue;
+                height: 600px;
+            }
+            
+            .text_box{
+                width: 400px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 style="color:aliceblue; font-size:40px; background-color:darkslategray; text-align: center;">
+            ${querydata.guest}님과의 채팅방
+        </h1>
+        <div id="chat_display">
+           
+        </div>
+        <form action="/chat/send_message">
+            <input class="send_button" type="submit" value="전송">
+            <input class="text_box" type="text" name="message">            
+        </form>
+        
+    </body>
+</html>`
+        
+        res.send(template);
     })
     
     return router;
 };
 //chatopen을 하나 추가해야겠다.
 //챗목록에 있는 아이디 클릭하면 /chat/chat_open 요청 보내서 채팅방 화면으로 넘어가게잉
+//190220 a태그의 url을 바꾸는 것 만으로도 서버에 request가 가능하구나;;
