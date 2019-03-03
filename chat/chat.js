@@ -109,11 +109,55 @@ module.exports = function(app){
         var querydata = url.parse(req.url,true).query;
         console.log(querydata);
         console.log('채팅방을 열겠습니다.');
+        var sender = req.user.email;
+        var guest = querydata.guest;
         var template = `<!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
-        <title>${querydata.guest}님과의 채팅방</title>
+        <script src="../../socket.io.js"></script>
+        <script src="../../vendor/jquery/jquery.min.js"></script>
+        <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+        <!-- Plugin JavaScript -->
+        <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+
+        <!-- Contact form JavaScript -->
+        <script src="../../js/jqBootstrapValidation.js"></script>
+        <script src="../../js/contact_me.js"></script>
+
+        <!-- Custom scripts for this template -->
+        <script src="../../js/agency.min.js"></script>
+
+        <script>
+var socket;
+            $(function(){
+$("#test").bind('click',function(event){
+                    var url = 'http://13.209.237.191:3000';
+                    var options = {'forceNew' : true};
+                    socket = io.connect(url,options);
+                    socket.on('test',function(){
+                    alert("test");
+});
+                
+});
+
+$("#send").bind('click',function(event){
+var message = $('#text_box').val();
+                    var sender1 = "${sender}";
+                    var guest1 = "${guest}";
+                    var data = {sender : sender1, receiver : guest1, message : message}
+            
+                    socket.emit('send_message',data)
+                    alert("s");
+});
+});
+
+
+               
+
+        </script>
+        <title>${guest}님과의 채팅방</title>
         <style>
             h1{
                 margin-top: -10px;
@@ -128,18 +172,19 @@ module.exports = function(app){
                 width: 400px;
             }
         </style>
+    
     </head>
     <body>
         <h1 style="color:aliceblue; font-size:40px; background-color:darkslategray; text-align: center;">
-            ${querydata.guest}님과의 채팅방
+            ${guest}님과의 채팅방
         </h1>
         <div id="chat_display">
            
         </div>
-        <form action="/chat/send_message">
-            <input class="send_button" type="submit" value="전송">
-            <input class="text_box" type="text" name="message">            
-        </form>
+            <button id="send" value="">전송</button>
+
+            <input id="text_box" type="text" name="message">
+        <button id="test">ssss</button>
         
     </body>
 </html>`

@@ -14,6 +14,9 @@ server.on('listening', onListening);
 
 io.sockets.on('connection',function(socket){
 console.log('socket connection event : ' + socket.id);
+socket.on('send_message',function(message){
+console.dir(message);
+});
 });
 
 function normalizePort(val) {

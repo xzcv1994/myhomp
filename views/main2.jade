@@ -760,7 +760,7 @@ html(lang='en')
           ul
            -for(var i=0;i<user_info.length;i++){
              li 
-               a(href="/chat/open/?guest=#{user_info[i]._doc.contact_person}" onclick="document.getElementById('frm#{i}').submit();") #{user_info[i]._doc.contact_person + i} 
+               a(href="/chat/open/?guest=#{user_info[i]._doc.contact_person}") #{user_info[i]._doc.contact_person + i} 
            -}  
         .chat_add
           form(method='get', action='/chat/chatadd')
@@ -770,23 +770,26 @@ html(lang='en')
             input.chat_add_submit(type='submit', valuse='등록', onclick='chat_add()')
         .close_popup(onclick='closePop()')
           img(src='../img/close-window.png')
+          
     script(type='text/javascript').
       var popup = document.getElementById("popup_bg");
+      
       function openPop(){
       popup.style.display = "block";
       }
+      
       function closePop(){
       popup.style.display = "none";
       }
+      
       function logout(){
       frm2.submit();
       }
+      
       function openchat(){
       popup.style.display = "block";
       }
-      function chat_open(){
-      frm3.submit();
-      }
+      
       function socket_connect(){
       var url = 'http://13.209.237.191:3000';
       var options = {'forceNew' : true};
@@ -795,6 +798,7 @@ html(lang='en')
       alert("socket's successfully connected");
       })
       }
+      
     // Bootstrap core JavaScript
     script(src='../vendor/jquery/jquery.min.js')
     script(src='../vendor/bootstrap/js/bootstrap.bundle.min.js')
