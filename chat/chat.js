@@ -58,7 +58,7 @@ module.exports = function(app){
                 });
                 
                 //방을 생성함과 동시에 방의 채팅내용을 기록할 컬렉션 생성
-                database.Chat_numModel.find({},function(err,num){
+                database.Chat_NumModel.find({},function(err,num){
                     
                     if(err){
                         throw err;
@@ -83,7 +83,7 @@ module.exports = function(app){
                         
                         console.log('현재 채팅방의 개수 : ' + serial_num);
                         
-                     database.Chat_numModel.update({'num' : serial_num +1},function(err,result){
+                     database.Chat_NumModel.update({'num' : serial_num +1},function(err,result){
                          if(err){
                              throw err;
                          }
@@ -130,32 +130,27 @@ module.exports = function(app){
         <script src="../../js/agency.min.js"></script>
 
         <script>
-var socket;
+        var socket;
             $(function(){
-$("#test").bind('click',function(event){
+                $("#test").bind('click',function(event){
                     var url = 'http://13.209.237.191:3000';
                     var options = {'forceNew' : true};
                     socket = io.connect(url,options);
                     socket.on('test',function(){
                     alert("test");
-});
+                    });
                 
-});
+                });
 
-$("#send").bind('click',function(event){
-var message = $('#text_box').val();
+            $("#send").bind('click',function(event){
+                    var message = $('#text_box').val();
                     var sender1 = "${sender}";
                     var guest1 = "${guest}";
                     var data = {sender : sender1, receiver : guest1, message : message}
             
-                    socket.emit('send_message',data)
-                    alert("s");
-});
-});
-
-
-               
-
+                    socket.emit('send_message',data);
+                });
+            });
         </script>
         <title>${guest}님과의 채팅방</title>
         <style>
