@@ -111,6 +111,15 @@ module.exports = function(app){
         console.log('채팅방을 열겠습니다.');
         var sender = req.user.email;
         var guest = querydata.guest;
+        var database == app.get('database');
+        var data
+        database.MessageModel.find({'sender' : message.sender, 'receiver' : message.receiver}, function(err,data){
+            if(err){
+                console.log("나눈 대화가 없습니다.");
+            }else{
+                console.dir(data[0]._doc.message);
+            }
+        })
         var template = `<!DOCTYPE html>
 <html>
     <head>
@@ -132,15 +141,14 @@ module.exports = function(app){
         <script>
         var socket;
             $(function(){
-                $("#test").bind('click',function(event){
+              
                     var url = 'http://13.209.237.191:3000';
                     var options = {'forceNew' : true};
                     socket = io.connect(url,options);
                     socket.on('test',function(){
                     alert("test");
                     });
-                
-                });
+               
 
             $("#send").bind('click',function(event){
                     var message = $('#text_box').val();

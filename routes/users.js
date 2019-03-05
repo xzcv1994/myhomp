@@ -55,10 +55,10 @@ router.get('/loginsuccess',function(req,res){
         var database = req.app.get('database');
         var chatlist;
 
-        chatlist = database.ChatModel.find({'host' : req.user.email},function(err,chatroom){
+        database.ChatModel.find({'host' : req.user.email},function(err,chatroom){
             if(err) throw err;
 
-            if(!chatroom){
+            if(chatroom == undefined){
                 console.log('생성한 채팅방이 없습니다.');
             }
 
@@ -70,7 +70,7 @@ router.get('/loginsuccess',function(req,res){
             }else{
                 
             }
-        });
+        });       
     }
     else{
    res.redirect('/');
