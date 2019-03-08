@@ -111,88 +111,190 @@ module.exports = function(app){
         console.log('채팅방을 열겠습니다.');
         var sender = req.user.email;
         var guest = querydata.guest;
-        var database == app.get('database');
-        var data
-        database.MessageModel.find({'sender' : message.sender, 'receiver' : message.receiver}, function(err,data){
+        var database = req.app.get('database');
+        
+        database.MessageModel.find({'sender' : sender, 'receiver' : guest}, function(err,data){
             if(err){
-                console.log("나눈 대화가 없습니다.");
+                console.dir(err);
+                throw err;
             }else{
-                console.dir(data[0]._doc.message);
+                
+                //대화로그가 없을 때
+                if(data.length == 0){
+                    console.log("나눈 대화가 없습니다."); 
+                    
+                            var template = `<!DOCTYPE html>
+                                            <html>
+                                                <head>
+                                                    <meta charset="utf-8">
+                                                    <script src="../../socket.io.js"></script>
+                                                    <script src="../../vendor/jquery/jquery.min.js"></script>
+                                                    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+                                            
+                                                    <!-- Plugin JavaScript -->
+                                                    <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+                                            
+                                                    <!-- Contact form JavaScript -->
+                                                    <script src="../../js/jqBootstrapValidation.js"></script>
+                                                    <script src="../../js/contact_me.js"></script>
+                                            
+                                                    <!-- Custom scripts for this template -->
+                                                    <script src="../../js/agency.min.js"></script>
+                                            
+                                                    <script>
+                                                    var socket;
+                                                        $(function(){
+                                                          
+                                                                var url = 'http://13.209.237.191:3000';
+                                                                var options = {'forceNew' : true};
+                                                                socket = io.connect(url,options);
+                                                                socket.on('test',function(){
+                                                                alert("test");
+                                                                });
+                                                           
+                                            
+                                                        $("#send").bind('click',function(event){
+                                                                var message = $('#text_box').val();
+                                                                var sender1 = "${sender}";
+                                                                var guest1 = "${guest}";
+                                                                var data = {sender : sender1, receiver : guest1, message : message}
+                                                        
+                                                                socket.emit('send_message',data);
+                                                            });
+                                                        });
+                                                    </script>
+                                                    <title>${guest}님과의 채팅방</title>
+                                                    <style>
+                                                        h1{
+                                                            margin-top: -10px;
+                                                            margin-bottom: 0;
+                                                        }
+                                                        #chat_display{
+                                                            background-color: cadetblue;
+                                                            height: 600px;
+                                                        }
+                                                        
+                                                        .text_box{
+                                                            width: 400px;
+                                                        }
+                                                    </style>
+                                                
+                                                </head>
+                                                <body>
+                                                    <h1 style="color:aliceblue; font-size:40px; background-color:darkslategray; text-align: center;">
+                                                        ${guest}님과의 채팅방
+                                                    </h1>
+                                                    <div id="chat_display">
+                                                       
+                                                    </div>
+                                                        <button id="send" value="">전송</button>
+                                            
+                                                        <input id="text_box" type="text" name="message">
+                                                    <button id="test">ssss</button>
+                                                    
+                                                </body>
+                                            </html>`
+        
+                                            res.send(template);
+                }else{
+                    //대화로그 페이지열며 출력
+                    var messages =[];
+                    
+                    //"string" 형태로 변환해서 새 배열에 저장
+                    for(var i=0;i<data.length;i++)
+                        {
+                            messages[i] = '"' + data[i]._doc.message + '"';
+                            console.log(messages[i]);
+                        }
+                    
+        
+                    var template = `<!DOCTYPE html>
+                                            <html>
+                                                <head>
+                                                    <meta charset="utf-8">
+                                                    <script src="../../socket.io.js"></script>
+                                                    <script src="../../vendor/jquery/jquery.min.js"></script>
+                                                    <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+                                            
+                                                    <!-- Plugin JavaScript -->
+                                                    <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
+                                            
+                                                    <!-- Contact form JavaScript -->
+                                                    <script src="../../js/jqBootstrapValidation.js"></script>
+                                                    <script src="../../js/contact_me.js"></script>
+                                            
+                                                    <!-- Custom scripts for this template -->
+                                                    <script src="../../js/agency.min.js"></script>
+                                            
+                                                    <script>
+                                                    var socket;
+                                                        $(function(){
+                                                          
+                                                                var url = 'http://13.209.237.191:3000';
+                                                                var options = {'forceNew' : true};
+                                                                socket = io.connect(url,options);
+                                                                socket.on('test',function(){
+                                                                alert("test");
+                                                                });
+                                                           
+                                            
+                                                        $("#send").bind('click',function(event){
+                                                                var message = $('#text_box').val();
+                                                                var sender1 = "${sender}";
+                                                                var guest1 = "${guest}";
+                                                                var data = {sender : sender1, receiver : guest1, message : message}
+                                                        
+                                                                socket.emit('send_message',data);
+                                                            });
+                                                        });
+                                                    </script>
+                                                    <title>${guest}님과의 채팅방</title>
+                                                    <style>
+                                                        h1{
+                                                            margin-top: -10px;
+                                                            margin-bottom: 0;
+                                                        }
+                                                        #chat_display{
+                                                            background-color: cadetblue;
+                                                            height: 600px;
+                                                        }
+                                                        
+                                                        .text_box{
+                                                            width: 400px;
+                                                        }
+                                                    </style>
+                                                
+                                                </head>
+                                                <body>
+                                                    <h1 style="color:aliceblue; font-size:40px; background-color:darkslategray; text-align: center;">
+                                                        ${guest}님과의 채팅방
+                                                    </h1>
+                                                    <div id="chat_display">
+                                                       <script>
+                                                            
+                                                            var arr = [${messages}];
+                                                            var i=0
+                                                            while(i<${messages.length})
+                                                            {
+                                                                 document.write('<li>' + arr[i] + '</li>');
+                                                                i++;
+                                                            }
+                                                        </script>
+                                                    </div>
+                                                        <button id="send" value="">전송</button>
+                                                        
+                                                        <input id="text_box" type="text" name="message">
+                                                    <button id="test">ssss</button>
+                                                    
+                                                </body>
+                                            </html>`
+        
+                                            res.send(template);
+                }
+                console.log("----------------------");
             }
         })
-        var template = `<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <script src="../../socket.io.js"></script>
-        <script src="../../vendor/jquery/jquery.min.js"></script>
-        <script src="../../vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Plugin JavaScript -->
-        <script src="../../vendor/jquery-easing/jquery.easing.min.js"></script>
-
-        <!-- Contact form JavaScript -->
-        <script src="../../js/jqBootstrapValidation.js"></script>
-        <script src="../../js/contact_me.js"></script>
-
-        <!-- Custom scripts for this template -->
-        <script src="../../js/agency.min.js"></script>
-
-        <script>
-        var socket;
-            $(function(){
-              
-                    var url = 'http://13.209.237.191:3000';
-                    var options = {'forceNew' : true};
-                    socket = io.connect(url,options);
-                    socket.on('test',function(){
-                    alert("test");
-                    });
-               
-
-            $("#send").bind('click',function(event){
-                    var message = $('#text_box').val();
-                    var sender1 = "${sender}";
-                    var guest1 = "${guest}";
-                    var data = {sender : sender1, receiver : guest1, message : message}
-            
-                    socket.emit('send_message',data);
-                });
-            });
-        </script>
-        <title>${guest}님과의 채팅방</title>
-        <style>
-            h1{
-                margin-top: -10px;
-                margin-bottom: 0;
-            }
-            #chat_display{
-                background-color: cadetblue;
-                height: 600px;
-            }
-            
-            .text_box{
-                width: 400px;
-            }
-        </style>
-    
-    </head>
-    <body>
-        <h1 style="color:aliceblue; font-size:40px; background-color:darkslategray; text-align: center;">
-            ${guest}님과의 채팅방
-        </h1>
-        <div id="chat_display">
-           
-        </div>
-            <button id="send" value="">전송</button>
-
-            <input id="text_box" type="text" name="message">
-        <button id="test">ssss</button>
-        
-    </body>
-</html>`
-        
-        res.send(template);
     })
     
     return router;
