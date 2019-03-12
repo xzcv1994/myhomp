@@ -55,7 +55,7 @@ router.get('/loginsuccess',function(req,res){
         var database = req.app.get('database');
         var chatlist;
 
-        database.ChatModel.find({'host' : req.user.email},function(err,chatroom){
+        database.Chat_Model.find({'host' : req.user.email},function(err,chatroom){
             if(err) throw err;
 
             if(chatroom == undefined){
@@ -64,7 +64,7 @@ router.get('/loginsuccess',function(req,res){
 
             if(chatroom){
                 var user_info = chatroom;
-                user_info.email = req.user.email;
+                user_info.user = req.user.email;
                 user_info.length = chatroom.length;
                  res.render('main2.jade',{user_info : user_info});
             }else{

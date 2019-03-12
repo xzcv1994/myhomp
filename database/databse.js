@@ -39,21 +39,22 @@ function createSchema(app,config){
     database[config.db_schemas[1].schemaName] = curSchema2;
     database[config.db_schemas[1].modelName] = curModel2;
     
-    //chat_num_schema
+    //message_schema
     var curSchema3  = require(config.db_schemas[2].file).createSchema(mongoose);
     
     var curModel3 = mongoose.model(config.db_schemas[2].collection,curSchema3);
     
     database[config.db_schemas[2].schemaName] = curSchema3;
     database[config.db_schemas[2].modelName] = curModel3;
+    
+    //chat_status_schema
+    var curSchema3  = require(config.db_schemas[3].file).createSchema(mongoose);
+    
+    var curModel3 = mongoose.model(config.db_schemas[3].collection,curSchema3);
+    
+    database[config.db_schemas[3].schemaName] = curSchema3;
+    database[config.db_schemas[3].modelName] = curModel3;
         
-    //message_schema
-    var curSchema4  = require(config.db_schemas[3].file).createSchema(mongoose);
-    
-    var curModel4 = mongoose.model(config.db_schemas[3].collection,curSchema4);
-    
-    database[config.db_schemas[3].schemaName] = curSchema4;
-    database[config.db_schemas[3].modelName] = curModel4;
     
     
     app.set('database',database);

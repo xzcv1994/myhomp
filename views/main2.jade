@@ -15,10 +15,69 @@ html(lang='en')
     link(href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic', rel='stylesheet', type='text/css')
     link(href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700', rel='stylesheet', type='text/css')
     script(src='../socket.io.js')
+        // Bootstrap core JavaScript
+    script(src='../vendor/jquery/jquery.min.js')
+    script(src='../vendor/bootstrap/js/bootstrap.bundle.min.js')
+    // Plugin JavaScript
+    script(src='../vendor/jquery-easing/jquery.easing.min.js')
+    // Contact form JavaScript
+    script(src='../js/jqBootstrapValidation.js')
+    script(src='../js/contact_me.js')
+    // Custom scripts for this template
+    script(src='../js/agency.min.js')
+
     // Custom styles for thistemplate
     link(href='../css/agency.min.css', rel='stylesheet')
+    script.
+      
+      var socket;
+      
+      $(function(){
+      var popup = document.getElementById("popup_bg");
+      var popup_chat = document.getElementById("popup_chat");
+      var test = document.getElementById("#{user_}");
+      
+      $("#logout").bind('click',function(event){
+        frm2.submit();
+      });
+      
+      $("#open_chat").bind('click',function(event){
+        popup.style.display = "block";
+      });
+      
+      $(".close_popup").bind('click',function(event){
+        popup.style.display = "none";
+      });   
+      
+      var url = 'http://13.209.237.191:3000';
+      var options = {'forceNew' : true};
+      socket = io.connect(url,options);
+      socket.on('connect',function(){
+      console.log('dddd');
+      alert("socket's successfully connected");
+      });
+     
+      });
+        
+      function chat_open(num){
+      var user = "#{user_info.user}";
+      var data = {user : user, person_num : num};
+      socket.emit('chat_open',data);
+      };
+            
+
+    
     style.
       #popup_bg{
+      position:fixed;
+      top:0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.7);
+      width: 100%;
+      height: 100%;
+      display: none;
+      }
+      #popup_chat{
       position:fixed;
       top:0;
       bottom: 0;
@@ -39,6 +98,19 @@ html(lang='en')
       bottom: 3%;
       background-size: 100% 100%;
       }
+      .popup_chat_main{
+      position:fixed;
+      width: 450px;
+      height: 550px;
+      border-style: solid;
+      border-color:dimgray;
+      background-color: dimgray;
+      border-radius: 5px;
+      left: 35%;
+      bottom: 10%;
+      background-size: 100% 100%;
+      }
+
       .chat_header{
       height: 60px;
       }
@@ -59,6 +131,18 @@ html(lang='en')
       border-color:#787878;
       border-radius: 5px;
       }
+      .chat_log{
+      background-color:#878787;
+      width: 80%;
+      height: 60%;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: 20px;
+      border-style: solid;
+      border-color:#787878;
+      border-radius: 5px;
+      }
+
       .chat_add_input{
       margin-left: 29%;
       border-style: solid;
@@ -110,14 +194,14 @@ html(lang='en')
         #navbarResponsive.collapse.navbar-collapse
           ul.navbar-nav.text-uppercase.ml-auto
             li.nav-item
-              a.nav-link.js-scroll-trigger(href='#team') #{user_info.email} 님
+              a.nav-link.js-scroll-trigger(href='#team') #{user_info.user} 님
             li.nav-item
               a.nav-link.js-scroll-trigger(href='#services') Services
             li.nav-item
               form(method='get', action='/users/logout', name='frm2')
-                a.nav-link.js-scroll-trigger(href='#portfolio', onclick='logout();') Logout
+                a#logout.nav-link.js-scroll-trigger(href='#portfolio') Logout
             li.nav-item
-              a.nav-link.js-scroll-trigger(onclick='openchat();') Chat
+              a#open_chat.nav-link.js-scroll-trigger Chat
             button(onclick='socket_connect();') test
             //
               <li class="nav-item">
@@ -760,7 +844,7 @@ html(lang='en')
           ul
            -for(var i=0;i<user_info.length;i++){
              li 
-               a(href="/chat/open/?guest=#{user_info[i]._doc.contact_person}") #{user_info[i]._doc.contact_person + i} 
+               a(id = "#{user_info[i]._doc.contact_person}" href="" onclick="chat_open(#{i});") #{user_info[i]._doc.contact_person } 
            -}  
         .chat_add
           form(method='get', action='/chat/chatadd')
@@ -768,45 +852,29 @@ html(lang='en')
             br
             br
             input.chat_add_submit(type='submit', valuse='등록', onclick='chat_add()')
-        .close_popup(onclick='closePop()')
+        .close_popup
           img(src='../img/close-window.png')
+        
+        
+    #popup_chat
+      .popup_chat_main
+        .chat_header(overflow:scroll='')
+          img(src='../img/Chat.png')
+        .chat_log
+          ul
+           -for(var i=0;i<user_info.length;i++){
+             li 
+               a(href="/chat/open/?guest=#{i + 1}") #{user_info[i]._doc.contact_person} 
+           -}  
+        .chat_add
+          form(method='get', action='/chat/chatadd')
+            input.chat_add_input(type='text', value='', name='receiver')
+            br
+            br
+            input.chat_add_submit(type='submit', valuse='등록', onclick='chat_add()')
+        .close_chat_popup
+          img(src='../img/close-window.png')
+
           
-    script(type='text/javascript').
-      var popup = document.getElementById("popup_bg");
       
-      function openPop(){
-      popup.style.display = "block";
-      }
-      
-      function closePop(){
-      popup.style.display = "none";
-      }
-      
-      function logout(){
-      frm2.submit();
-      }
-      
-      function openchat(){
-      popup.style.display = "block";
-      }
-      
-      function socket_connect(){
-      var url = 'http://13.209.237.191:3000';
-      var options = {'forceNew' : true};
-      var socket = io.connect(url,options);
-      socket.on('connect',function(){
-      alert("socket's successfully connected");
-      })
-      }
-      
-    // Bootstrap core JavaScript
-    script(src='../vendor/jquery/jquery.min.js')
-    script(src='../vendor/bootstrap/js/bootstrap.bundle.min.js')
-    // Plugin JavaScript
-    script(src='../vendor/jquery-easing/jquery.easing.min.js')
-    // Contact form JavaScript
-    script(src='../js/jqBootstrapValidation.js')
-    script(src='../js/contact_me.js')
-    // Custom scripts for this template
-    script(src='../js/agency.min.js')
 //저 for로 여러개 폼을 똑같은 이름으로 만드니까 전송이안가더라고 그래서 다른거 지우고 아이디 한개만 해서 폼한개만 해서 전송하면 채팅방 로드하는거 됐음

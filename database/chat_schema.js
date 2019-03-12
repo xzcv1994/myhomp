@@ -5,12 +5,12 @@ var Schema = {};
 
 Schema.createSchema = function(mongoose){
     
-    var Chat_Schema = mongoose.Schema({
+    var chat_Schema = mongoose.Schema({
         host : {type : String, 'default' : ''},
         contact_person : {type : String, 'default' : ''}
     });
     
-    return Chat_Schema;
+    return chat_Schema;
 }
 
 module.exports = Schema;

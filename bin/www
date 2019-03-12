@@ -28,7 +28,7 @@ console.log('socket connection event : ' + socket.id);
         console.log("받는 사람 : " + message.receiver);
         console.log("내용 : " + message.message);
         
-        var message = new database.MessageModel({'sender' : message.sender, 'receiver' : message.receiver, 'message' : message.message, 'create_date' : new Date()});
+        var message = new database.Message_Model({'sender' : message.sender, 'receiver' : message.receiver, 'message' : message.message, 'create_date' : new Date()});
         
         //message 저장
         message.save(function(err){
@@ -36,10 +36,13 @@ console.log('socket connection event : ' + socket.id);
                 throw err;
             }else(err = null)
             console.log('message 저장 완료');
-        });
-        
-        
-        
+        }); 
+    });
+    
+    socket.on('chat_open',function(data){
+    console.log("---------------------------------")
+    console.dir(data);
+    var status = new database.Chat_Status_Model({user : data.user, contact_person : data.})
     });
     
 });

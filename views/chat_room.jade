@@ -1,0 +1,55 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    script(src='../../socket.io.js')
+    script(src='../../vendor/jquery/jquery.min.js')
+    script(src='../../vendor/bootstrap/js/bootstrap.bundle.min.js')
+    // Plugin JavaScript
+    script(src='../../vendor/jquery-easing/jquery.easing.min.js')
+    // Contact form JavaScript
+    script(src='../../js/jqBootstrapValidation.js')
+    script(src='../../js/contact_me.js')
+    // Custom scripts for this template
+    script(src='../../js/agency.min.js')
+    script.
+      var socket;
+      $(function(){
+      var url = 'http://13.209.237.191:3000';
+      var options = {'forceNew' : true};
+      socket = io.connect(url,options);
+      socket.on('test',function(){
+      alert("test");
+      });
+      $("#send").bind('click',function(event){
+      var message = $('#text_box').val();
+      var data = {sender : "#{sender}", receiver : "#{receiver}", message : message}
+      socket.emit('send_message',data)
+     
+      });
+      });
+    title #{receiver}님과의 채팅방
+    style.
+      h1{
+      margin-top: -10px;
+      margin-bottom: 0;
+      }
+      #chat_display{
+      background-color: cadetblue;
+      height: 600px;
+      }
+      .text_box{
+      width: 400px;
+      }
+  body
+                a#open_chat.nav-link.js-scroll-trigger chat
+    h1(style='color:aliceblue; font-size:40px; background-color:darkslategray; text-align: center;')
+      | #{receiver}님과의 채팅방
+    #chat_display
+      ul
+        -for(var i=0;i<chat_data.length;i++)
+          li #{chat_data[i]}
+        
+    button#send(value='') 전송
+    input#text_box(type='text', name='message')
+    button#test ssss
