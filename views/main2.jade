@@ -34,7 +34,7 @@ html(lang='en')
       
       $(function(){
       var popup = document.getElementById("popup_bg");
-      var popup_chat = document.getElementById("popup_chat");
+      var popup_chat_bg = document.getElementById("popup_chat_bg");
       var test = document.getElementById("#{user_}");
       
       $("#logout").bind('click',function(event){
@@ -47,7 +47,12 @@ html(lang='en')
       
       $(".close_popup").bind('click',function(event){
         popup.style.display = "none";
+      });  
+      
+      $(".close_chat_popup").bind('click',function(event){
+        popup_chat_bg.style.display = "none";
       });   
+
       
       var url = 'http://13.209.237.191:3000';
       var options = {'forceNew' : true};
@@ -56,13 +61,18 @@ html(lang='en')
       console.log('dddd');
       alert("socket's successfully connected");
       });
-     
       });
         
       function chat_open(num){
+      var popup = document.getElementById("popup_bg");
+      var popup_chat_bg = document.getElementById("popup_chat_bg");
+      
+      popup.style.display = "none";
+      popup_chat_bg.style.display = "block";
+      
       var user = "#{user_info.user}";
       var data = {user : user, person_num : num};
-      socket.emit('chat_open',data);
+      socket.emit('chat_enter',data);
       };
             
 
@@ -77,7 +87,7 @@ html(lang='en')
       height: 100%;
       display: none;
       }
-      #popup_chat{
+      #popup_chat_bg{
       position:fixed;
       top:0;
       bottom: 0;
@@ -95,7 +105,7 @@ html(lang='en')
       background-color: dimgray;
       border-radius: 5px;
       left: 35%;
-      bottom: 3%;
+      bottom: 10%;
       background-size: 100% 100%;
       }
       .popup_chat_main{
@@ -134,7 +144,7 @@ html(lang='en')
       .chat_log{
       background-color:#878787;
       width: 80%;
-      height: 60%;
+      height: 70%;
       margin-left: auto;
       margin-right: auto;
       margin-bottom: 20px;
@@ -175,6 +185,27 @@ html(lang='en')
       margin: -5px 0 0 0;
       font-family: sans-serif;
       }
+      .close_chat_popup img{
+      position:absolute;
+      width: 15px;
+      height: 15px;
+      cursor: pointer;
+      }
+      .close_chat_popup img:hover{
+      cursor: pointer;
+      }
+      .close_chat_popup{
+      position:absolute;
+      width: 15px;
+      height: 15px;
+      right: 5px;
+      top: 5px;
+      }
+      .close_chat_popup p{
+      margin: -5px 0 0 0;
+      font-family: sans-serif;
+      }
+
       .popup_banner p{
       margin: 12px 0 -15px 0;
       font-size: 30px;
@@ -844,7 +875,7 @@ html(lang='en')
           ul
            -for(var i=0;i<user_info.length;i++){
              li 
-               a(id = "#{user_info[i]._doc.contact_person}" href="" onclick="chat_open(#{i});") #{user_info[i]._doc.contact_person } 
+               a(id = "#{user_info[i]._doc.contact_person}" href="#" onclick="chat_open(#{i});") #{user_info[i]._doc.contact_person } 
            -}  
         .chat_add
           form(method='get', action='/chat/chatadd')
@@ -856,7 +887,7 @@ html(lang='en')
           img(src='../img/close-window.png')
         
         
-    #popup_chat
+    #popup_chat_bg
       .popup_chat_main
         .chat_header(overflow:scroll='')
           img(src='../img/Chat.png')

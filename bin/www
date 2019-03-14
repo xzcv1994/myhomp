@@ -19,7 +19,7 @@ io.sockets.on('connection',function(socket){
 console.log('socket connection event : ' + socket.id);
 
     var database = app.get('database');
-    
+    var obj;
     
     //message event 수신
     socket.on('send_message',function(message){
@@ -39,12 +39,45 @@ console.log('socket connection event : ' + socket.id);
         }); 
     });
     
-    socket.on('chat_open',function(data){
+    //chat방에 입장할 때 대화를 누구와 대화를 시작하는지 상태 저장
+    socket.on('chat_enter',function(data){
     console.log("---------------------------------")
     console.dir(data);
-    var status = new database.Chat_Status_Model({user : data.user, contact_person : data.})
+    
+    database.Chat_Model.find({'host' : data.user},function(err,info){
+    
+    if(err){
+    console.log(err);
+    throw err;
+    }
+    
+    var contact_person = info[data.person_num]._doc.contact_person;
+    var user = data.user;
+    console.log("-----------------------save------")
+    
+    database.Chat_Status_Model.find({'user' : user, 'contact_person' : contact_person},function(err,result){
+    if(err){
+    console.log(err);
+    throw err;
+    }
+    
+    if(result.length == 0){
+    
+    var status = new database.Chat_Status_Model({'user' : user, 'contact_person' : contact_person});
+    
+    status.save(function(err){
+    if(err){
+    console.log(err);
+    throw err;
+    }
     });
     
+    }else{
+    console.log("이미 대화중임");
+    }
+    });
+    });
+    });
 });
 
 function normalizePort(val) {
