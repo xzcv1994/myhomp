@@ -52,18 +52,42 @@ html(lang='en')
       $(".close_chat_popup").bind('click',function(event){
         popup_chat_bg.style.display = "none";
       });   
-
       
-      var url = 'http://13.209.237.191:3000';
-      var options = {'forceNew' : true};
-      socket = io.connect(url,options);
-      socket.on('connect',function(){
-      console.log('dddd');
-      alert("socket's successfully connected");
-      });
-      });
+      //socket 연결
+      $("#connect").bind('click',function(event){
+        var url = 'http://13.209.237.191:3000';
+        var options = {'forceNew' : true};
+        socket = io.connect(url,options);
         
-      function chat_open(num){
+        socket.on('connect',function(){
+        console.log('connect success');
+        alert("socket's successfully connected");
+        
+        var user = "#{user_info.user}";
+        var data = {regist_id : user};
+        
+        //socket연결할 때 id등록
+        socket.emit('regist_id',data);
+        
+        //disconnect 이벤트 관리
+        socket.on('disconnect',function(){
+        alert("socket과의 연결이 끊어졌습니다.");
+        })
+      });
+
+      })
+      
+      //socket 연결 테스트
+      $("#test").bind('click',function(event){
+        var user = "#{user_info.user}";
+        var data = {user : user}
+        socket.emit('test',data);
+      })
+      
+      });
+      
+      //채팅방 선택입장  
+      function chat_enter(num){
       var popup = document.getElementById("popup_bg");
       var popup_chat_bg = document.getElementById("popup_chat_bg");
       
@@ -233,7 +257,9 @@ html(lang='en')
                 a#logout.nav-link.js-scroll-trigger(href='#portfolio') Logout
             li.nav-item
               a#open_chat.nav-link.js-scroll-trigger Chat
-            button(onclick='socket_connect();') test
+            button#connect connect
+            button#test test
+
             //
               <li class="nav-item">
               <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
@@ -875,7 +901,7 @@ html(lang='en')
           ul
            -for(var i=0;i<user_info.length;i++){
              li 
-               a(id = "#{user_info[i]._doc.contact_person}" href="#" onclick="chat_open(#{i});") #{user_info[i]._doc.contact_person } 
+               a(id = "#{user_info[i]._doc.contact_person}" href="#" onclick="chat_enter(#{i});") #{user_info[i]._doc.contact_person } 
            -}  
         .chat_add
           form(method='get', action='/chat/chatadd')

@@ -6,7 +6,7 @@ var socketio = require('socket.io');
 app.set('port', port);
 
 var server = http.createServer(app);
-
+var socket_idss = [];
 server.listen(port);
 
 //소켓등록
@@ -16,12 +16,35 @@ server.on('listening', onListening);
 
 //소켓 connection
 io.sockets.on('connection',function(socket){
+console.log('');
 console.log('socket connection event : ' + socket.id);
 
     var database = app.get('database');
     var obj;
+//test
+    socket.on('test',function(data){
+    console.log('');
+    console.log(data.user + "의 socket id : " + socket_idss[data.user]);
+    console.dir(socket_idss);
+    console.log(socket_idss.length);
+    console.log('');
     
-    //message event 수신
+})
+
+//login_ids 등록
+    socket.on('regist_id',function(data){
+    
+    console.log("socket_idss 등록 : " + data.regist_id);
+    
+    socket_idss[data.regist_id] = socket.id;
+    
+    console.log(data.regist_id + "의 socket id : " + socket_idss[data.regist_id]);
+    console.log("=====등록된 socket 목록=====")
+    console.dir(socket_idss);
+    console.log('');
+    })
+    
+//message event 수신
     socket.on('send_message',function(message){
         
         console.log("보내는 사람 : " + message.sender);
@@ -39,11 +62,12 @@ console.log('socket connection event : ' + socket.id);
         }); 
     });
     
-    //chat방에 입장할 때 대화를 누구와 대화를 시작하는지 상태 저장
+//chat방에 입장할 때 대화를 누구와 대화를 시작하는지 상태 저장
     socket.on('chat_enter',function(data){
     console.log("---------------------------------")
     console.dir(data);
     
+    //client에서 보내온 host user정보와 person_num정보로 host user가 어떤 user와 대화를 시작하는지 검색
     database.Chat_Model.find({'host' : data.user},function(err,info){
     
     if(err){
@@ -51,16 +75,19 @@ console.log('socket connection event : ' + socket.id);
     throw err;
     }
     
+    //person_num으로 대화할 상대를 확인
     var contact_person = info[data.person_num]._doc.contact_person;
     var user = data.user;
-    console.log("-----------------------save------")
+    console.log(user + "와 " + contact_person + "의 대화방이 열립니다.");
     
+    //host user와 대화할 상대의 채팅상태 정보가 있는지 검색
     database.Chat_Status_Model.find({'user' : user, 'contact_person' : contact_person},function(err,result){
     if(err){
     console.log(err);
     throw err;
     }
     
+    //채팅 상태 정보가 없다면
     if(result.length == 0){
     
     var status = new database.Chat_Status_Model({'user' : user, 'contact_person' : contact_person});
@@ -72,7 +99,9 @@ console.log('socket connection event : ' + socket.id);
     }
     });
     
+    sockets.emit
     }else{
+    //이미 채팅 상태 정보가 있다면 나중에 수정해야할 부분
     console.log("이미 대화중임");
     }
     });
