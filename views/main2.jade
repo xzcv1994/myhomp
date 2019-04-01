@@ -31,11 +31,14 @@ html(lang='en')
     script.
       
       var socket;
+      var arr = new Array();
       
+     
+        
+        
       $(function(){
       var popup = document.getElementById("popup_bg");
       var popup_chat_bg = document.getElementById("popup_chat_bg");
-      var test = document.getElementById("#{user_}");
       
       $("#logout").bind('click',function(event){
         frm2.submit();
@@ -51,6 +54,8 @@ html(lang='en')
       
       $(".close_chat_popup").bind('click',function(event){
         popup_chat_bg.style.display = "none";
+        $('.chat_log_header *').remove();
+        
       });   
       
       //socket 연결
@@ -90,12 +95,17 @@ html(lang='en')
       function chat_enter(num){
       var popup = document.getElementById("popup_bg");
       var popup_chat_bg = document.getElementById("popup_chat_bg");
+      var user = !{JSON.stringify(user_info.user)};
+      var chat_list = !{JSON.stringify(chat_list)};
+      var contact_person = chat_list[num];
+
+      var data = {user : user, contact_person : contact_person};
+      
       
       popup.style.display = "none";
       popup_chat_bg.style.display = "block";
+      $('.chat_log_header').append('<p id="contact_person">' + contact_person + '</p>');
       
-      var user = "#{user_info.user}";
-      var data = {user : user, person_num : num};
       socket.emit('chat_enter',data);
       };
             
@@ -147,6 +157,12 @@ html(lang='en')
 
       .chat_header{
       height: 60px;
+      }
+      #contact_person{
+      text-align:center;
+      color:#FAFAFA;
+      font-size:30px;
+      font-weight:bold;
       }
       .chat_header img{
       width: 60px;
@@ -901,7 +917,7 @@ html(lang='en')
           ul
            -for(var i=0;i<user_info.length;i++){
              li 
-               a(id = "#{user_info[i]._doc.contact_person}" href="#" onclick="chat_enter(#{i});") #{user_info[i]._doc.contact_person } 
+               a(id = "#{user_info[i].contact_person}" href="#" onclick="chat_enter(#{i});") #{user_info[i].contact_person } 
            -}  
         .chat_add
           form(method='get', action='/chat/chatadd')
@@ -915,8 +931,7 @@ html(lang='en')
         
     #popup_chat_bg
       .popup_chat_main
-        .chat_header(overflow:scroll='')
-          img(src='../img/Chat.png')
+        .chat_log_header(overflow:scroll='')
         .chat_log
           ul
            -for(var i=0;i<user_info.length;i++){

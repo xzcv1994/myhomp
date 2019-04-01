@@ -63,10 +63,18 @@ router.get('/loginsuccess',function(req,res){
             }
 
             if(chatroom){
+                
+                var chat_list = new Array();
+                
+                for(var i=0;i<chatroom.length;i++){
+                    chat_list[i] = chatroom[i]._doc.contact_person;
+                }
+                
+                console.dir(chat_list);
                 var user_info = chatroom;
                 user_info.user = req.user.email;
                 user_info.length = chatroom.length;
-                 res.render('main2.jade',{user_info : user_info});
+                 res.render('main2.jade',{user_info : user_info, chat_list : chat_list});
             }else{
                 
             }
