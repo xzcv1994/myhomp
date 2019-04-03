@@ -54,6 +54,12 @@ html(lang='en')
       
       $(".close_chat_popup").bind('click',function(event){
         popup_chat_bg.style.display = "none";
+        var user = !{JSON.stringify(user_info.user)};
+        var string = document.getElementById("contact_person").innerHTML;
+        var contact_person = string.split('님');        
+        var data = {user : user, contact_person : contact_person[0]};
+        
+        socket.emit('chat_out',data)
         $('.chat_log_header *').remove();
         
       });   
@@ -74,6 +80,16 @@ html(lang='en')
         //socket연결할 때 id등록
         socket.emit('regist_id',data);
         
+        
+        socket.on('chat_log',function(data){
+        
+        var test_data = data.test_data;
+        
+        for(var i=0;i<15;i++)
+            alert(test_data[i]);
+        });
+
+        
         //disconnect 이벤트 관리
         socket.on('disconnect',function(){
         alert("socket과의 연결이 끊어졌습니다.");
@@ -81,6 +97,7 @@ html(lang='en')
       });
 
       })
+      
       
       //socket 연결 테스트
       $("#test").bind('click',function(event){
@@ -104,7 +121,7 @@ html(lang='en')
       
       popup.style.display = "none";
       popup_chat_bg.style.display = "block";
-      $('.chat_log_header').append('<p id="contact_person">' + contact_person + '</p>');
+      $('.chat_log_header').append('<p id="contact_person">' + contact_person + '님 과의 채팅방</p>');
       
       socket.emit('chat_enter',data);
       };

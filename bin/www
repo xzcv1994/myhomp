@@ -24,6 +24,7 @@ console.log('socket connection event : ' + socket.id);
 //test
     socket.on('test',function(data){
     console.log('');
+    console.log("=========등록 socket 확인=========")
     console.log("=====등록된 socket 목록=====")
     console.log(data.user + "의 socket id : " + socket_idss[data.user]);
     console.dir(socket_idss);
@@ -34,7 +35,8 @@ console.log('socket connection event : ' + socket.id);
 
 //login_ids 등록
     socket.on('regist_id',function(data){
-    
+    console.log('');
+    console.log("=========regist_id=========")
     console.log("socket_idss 등록 : " + data.regist_id);
     
     socket_idss[data.regist_id] = socket.id;
@@ -63,9 +65,10 @@ console.log('socket connection event : ' + socket.id);
         }); 
     });
     
-//chat방에 입장할 때 대화를 누구와 대화를 시작하는지 상태 저장
+//chat방 입장
     socket.on('chat_enter',function(data){
-    console.log("---------------------------------")
+    console.log('');
+    console.log("=========chat enter=========")
     console.dir(data);
     
      
@@ -76,9 +79,10 @@ console.log('socket connection event : ' + socket.id);
     throw err;
     }
     
-    //채팅 상태 정보가 없다면
+    //채팅 상태 정보가 없다면 일반적인 채팅방 입장 상황
     if(result.length == 0){
     
+    //채팅 상태를 저장
     var status = new database.Chat_Status_Model({'user' : data.user, 'contact_person' : data.contact_person});
     
     status.save(function(err){
@@ -88,13 +92,58 @@ console.log('socket connection event : ' + socket.id);
     }
     });
     
+    database.Message_Model.find({'sender' : data.user, 'receiver' : data.contact_person},function(err,result){
+    if(err){
+    console.log(err);
+    throw err;
+    }
+    
+    if(result.length == 0){
+    console.log("대화 내역이 없습니다.");
+    }else{
+    
+    var chat_log = new Array();
+    
+    for(var i=0;i<result.length;i++){
+        chat_log[i] = result[i]._doc.message;
+    }
+    
+    var chat_data = {chat_log : };
+    console.dir(chat_log);
+    io.to(socket_idss[data.user]).emit('chat_log',{test_data : chat_log});
+    console.log('testtesttest');
+
+    }
+    console.log(result.length);
+    });
+    
+    
     }else{
     //이미 채팅 상태 정보가 있다면 나중에 수정해야할 부분
     console.log("이미 대화중임");
+    console.log('');
     }
     });
     });
+
+//chat방 퇴장
+    socket.on('chat_out',function(data){
+    console.log('');
+    console.log("=========chat out=========")
+    console.dir(data);
+    
+    //user와 contact_person의 대화 상태 정보가 있는지 검색
+    database.Chat_Status_Model.deleteOne({'user' : data.user, 'contact_person' : data.contact_person}, function(err,result){
+    if(err){
+    console.log(err);
+    throw err;
+    }else{
+    console.log(data.user + "와 " + data.contact_person + "의 대화 상태 정보를 제거했습니다.");
+    }
     });
+    });
+    
+});
 
 function normalizePort(val) {
   var port = parseInt(val, 10);
