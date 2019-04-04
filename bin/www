@@ -92,25 +92,43 @@ console.log('socket connection event : ' + socket.id);
     }
     });
     
+    //message 검색
     database.Message_Model.find({'sender' : data.user, 'receiver' : data.contact_person},function(err,result){
     if(err){
     console.log(err);
     throw err;
     }
     
+    //대화내역 없음
     if(result.length == 0){
     console.log("대화 내역이 없습니다.");
+    var chat_log_data = new Array();
+    //io.to(socket_idss[data.user]).emit('chat_log',{test_data : chat_log_data});
     }else{
     
-    var chat_log = new Array();
+    //대화내역 있음
     
+    //대화내역 배열
+    var chat_log_data = new Array();
+    
+    //대화 송신자 배열
+    var chat_sender = new Array();
+
+    //대화내역 배열 저장
     for(var i=0;i<result.length;i++){
-        chat_log[i] = result[i]._doc.message;
+        chat_log_data[i] = result[i]._doc.message;
     }
     
-    var chat_data = {chat_log : };
-    console.dir(chat_log);
-    io.to(socket_idss[data.user]).emit('chat_log',{test_data : chat_log});
+    //대화 송신자 배열 저장
+    for(var i=0;i<result.length;i++){
+        chat_sender[i] = result[i]._doc.sender;
+    }
+    
+    
+    console.dir(chat_log_data);
+    console.dir(chat_sender);
+
+    io.to(socket_idss[data.user]).emit('chat_log',{chat_log_data : chat_log_data, chat_sender : chat_sender});
     console.log('testtesttest');
 
     }

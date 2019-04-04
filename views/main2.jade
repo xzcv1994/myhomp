@@ -61,8 +61,19 @@ html(lang='en')
         
         socket.emit('chat_out',data)
         $('.chat_log_header *').remove();
-        
-      });   
+        $('.chat_log *').remove();
+      });  
+      
+      //message 전송
+      $(".message_send").bind('click',function(event){
+        var message = document.getElementById("message_input").value;
+        var sender = !{JSON.stringify(user_info.user)};
+        var string = document.getElementById("contact_person").innerHTML;
+        var contact_person = string.split('님');        
+        var data = {sender : sender, receiver : contact_person[0], message : message};
+
+        socket.emit('send_message',data);
+      });
       
       //socket 연결
       $("#connect").bind('click',function(event){
@@ -80,13 +91,15 @@ html(lang='en')
         //socket연결할 때 id등록
         socket.emit('regist_id',data);
         
-        
+        //chat_log 수신
         socket.on('chat_log',function(data){
         
-        var test_data = data.test_data;
+        var chat_log_data = data.chat_log_data;
+        var chat_sender = data.chat_sender;
         
-        for(var i=0;i<15;i++)
-            alert(test_data[i]);
+        for(var i=0;i<chat_log_data.length;i++){
+        $('.chat_log').append('<li id="chat_log">' + chat_sender[i] + ' : ' + chat_log_data[i] + '</li>');
+        }
         });
 
         
@@ -101,15 +114,22 @@ html(lang='en')
       
       //socket 연결 테스트
       $("#test").bind('click',function(event){
+      if(socket == undefined){
+      alert("socket을 먼저 연결해주세요");
+      }else{
         var user = "#{user_info.user}";
         var data = {user : user}
         socket.emit('test',data);
-      })
       
+      }
+      })
       });
       
       //채팅방 선택입장  
       function chat_enter(num){
+      if(socket == undefined){
+      alert("socket을 먼저 연결해주세요");
+      }else{
       var popup = document.getElementById("popup_bg");
       var popup_chat_bg = document.getElementById("popup_chat_bg");
       var user = !{JSON.stringify(user_info.user)};
@@ -124,6 +144,7 @@ html(lang='en')
       $('.chat_log_header').append('<p id="contact_person">' + contact_person + '님 과의 채팅방</p>');
       
       socket.emit('chat_enter',data);
+      }
       };
             
 
@@ -162,7 +183,7 @@ html(lang='en')
       .popup_chat_main{
       position:fixed;
       width: 450px;
-      height: 550px;
+      height: 650px;
       border-style: solid;
       border-color:dimgray;
       background-color: dimgray;
@@ -208,6 +229,7 @@ html(lang='en')
       border-style: solid;
       border-color:#787878;
       border-radius: 5px;
+      list-style: none;
       }
 
       .chat_add_input{
@@ -216,7 +238,20 @@ html(lang='en')
       border-color:#787878;
       border-radius: 5px;
       }
+      #message_input{
+      margin-left: 29%;
+      border-style: solid;
+      border-color:#787878;
+      border-radius: 5px;
+      }
+      
       .chat_add_submit{
+      margin-left: 45%;
+      border-style: solid;
+      border-color:#787878;
+      border-radius: 5px;
+      }
+      .message_send{
       margin-left: 45%;
       border-style: solid;
       border-color:#787878;
@@ -941,7 +976,7 @@ html(lang='en')
             input.chat_add_input(type='text', value='', name='receiver')
             br
             br
-            input.chat_add_submit(type='submit', valuse='등록', onclick='chat_add()')
+            input.chat_add_submit(type='submit', value='등록', onclick='chat_add()')
         .close_popup
           img(src='../img/close-window.png')
         
@@ -950,17 +985,11 @@ html(lang='en')
       .popup_chat_main
         .chat_log_header(overflow:scroll='')
         .chat_log
-          ul
-           -for(var i=0;i<user_info.length;i++){
-             li 
-               a(href="/chat/open/?guest=#{i + 1}") #{user_info[i]._doc.contact_person} 
-           -}  
         .chat_add
-          form(method='get', action='/chat/chatadd')
-            input.chat_add_input(type='text', value='', name='receiver')
-            br
-            br
-            input.chat_add_submit(type='submit', valuse='등록', onclick='chat_add()')
+          input#message_input(type='text', value='', name='receiver')
+          br
+          br
+          button.message_send 전송
         .close_chat_popup
           img(src='../img/close-window.png')
 
