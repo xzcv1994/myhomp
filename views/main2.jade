@@ -30,12 +30,9 @@ html(lang='en')
     link(href='../css/agency.min.css', rel='stylesheet')
     script.
       
+      //소켓 변수
       var socket;
-      var arr = new Array();
       
-     
-        
-        
       $(function(){
       var popup = document.getElementById("popup_bg");
       var popup_chat_bg = document.getElementById("popup_chat_bg");
@@ -66,13 +63,23 @@ html(lang='en')
       
       //message 전송
       $(".message_send").bind('click',function(event){
+      if($('#message_input').val() == '' || $('#message_input').val() == null){
+        alert("message를 입력해주세요.");
+      }else{
         var message = document.getElementById("message_input").value;
         var sender = !{JSON.stringify(user_info.user)};
         var string = document.getElementById("contact_person").innerHTML;
         var contact_person = string.split('님');        
         var data = {sender : sender, receiver : contact_person[0], message : message};
-
-        socket.emit('send_message',data);
+        //채팅창에 전송 메시지 추가
+        $('.chat_log').append('<li id="chat_log">' + sender + ' : ' + message + '</li>');
+        //스크롤바 자동밑으로
+        $('.chat_log').scrollTop($('.chat_log').prop('scrollHeight'));
+        //입력창 클리어
+        $('#message_input').val('');
+        //소켓 이벤트 전송
+        socket.emit('send_message',data);      
+      }
       });
       
       //socket 연결
@@ -101,11 +108,19 @@ html(lang='en')
         $('.chat_log').append('<li id="chat_log">' + chat_sender[i] + ' : ' + chat_log_data[i] + '</li>');
         }
         });
+        
+        socket.on('message',function(data){
+        var message = data.message;
+        var sender = data.sender;
+         $('.chat_log').append('<li id="chat_log">' + sender + ' : ' + message + '</li>');
+         $('.chat_log').scrollTop($('.chat_log').prop('scrollHeight'));
+        });
 
         
         //disconnect 이벤트 관리
         socket.on('disconnect',function(){
         alert("socket과의 연결이 끊어졌습니다.");
+        
         })
       });
 
@@ -138,7 +153,7 @@ html(lang='en')
 
       var data = {user : user, contact_person : contact_person};
       
-      
+      $('.chat_log').scrollTop($('.chat_log').prop('scrollHeight'));      
       popup.style.display = "none";
       popup_chat_bg.style.display = "block";
       $('.chat_log_header').append('<p id="contact_person">' + contact_person + '님 과의 채팅방</p>');
@@ -170,8 +185,8 @@ html(lang='en')
       }
       .popup_main{
       position:fixed;
-      width: 390px;
-      height:450px;
+      width: 40%;
+      height: 55%;
       border-style: solid;
       border-color:dimgray;
       background-color: dimgray;
@@ -182,8 +197,8 @@ html(lang='en')
       }
       .popup_chat_main{
       position:fixed;
-      width: 450px;
-      height: 650px;
+      width: 50%;
+      height: 65%;
       border-style: solid;
       border-color:dimgray;
       background-color: dimgray;
@@ -199,7 +214,7 @@ html(lang='en')
       #contact_person{
       text-align:center;
       color:#FAFAFA;
-      font-size:30px;
+      font-size:180%;
       font-weight:bold;
       }
       .chat_header img{
@@ -230,16 +245,19 @@ html(lang='en')
       border-color:#787878;
       border-radius: 5px;
       list-style: none;
+      overflow-x:scroll;
       }
 
       .chat_add_input{
-      margin-left: 29%;
+      margin-left: 25%;
+      width: 50%;
       border-style: solid;
       border-color:#787878;
       border-radius: 5px;
       }
       #message_input{
       margin-left: 29%;
+      width: 70%;
       border-style: solid;
       border-color:#787878;
       border-radius: 5px;

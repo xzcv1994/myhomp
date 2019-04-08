@@ -50,6 +50,7 @@ console.log('socket connection event : ' + socket.id);
 //message event 수신
     socket.on('send_message',function(message){
         
+        console.log("=========message send=========");
         console.log("보내는 사람 : " + message.sender);
         console.log("받는 사람 : " + message.receiver);
         console.log("내용 : " + message.message);
@@ -63,6 +64,20 @@ console.log('socket connection event : ' + socket.id);
             }else(err = null)
             console.log('message 저장 완료');
         }); 
+        
+        database.Chat_Status_Model.find({'user' : message.receiver, 'contact_person' : message.sender},function(err,result){
+        
+            if(err){
+            console.log(err);
+            throw err;
+            }
+            
+            if(result == 0){
+            console.log("상대방이 현재 대화에 참여중이 아닙니다.");
+            }else{
+            io.to(socket_idss[message.receiver]).emit('message',{message : message.message, sender : message.sender});
+            }
+        });
     });
     
 //chat방 입장
@@ -93,7 +108,7 @@ console.log('socket connection event : ' + socket.id);
     });
     
     //message 검색
-    database.Message_Model.find({'sender' : data.user, 'receiver' : data.contact_person},function(err,result){
+    database.Message_Model.find({ $or :[{'sender' : data.user, 'receiver' : data.contact_person}, {'sender' : data.contact_person, 'receiver' : data.user}]},function(err,result){
     if(err){
     console.log(err);
     throw err;
@@ -107,7 +122,7 @@ console.log('socket connection event : ' + socket.id);
     }else{
     
     //대화내역 있음
-    
+    console.log(result.length);
     //대화내역 배열
     var chat_log_data = new Array();
     
